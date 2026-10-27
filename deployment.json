@@ -1,0 +1,12 @@
+{
+  "accountId": "REPLACE",
+  "workerName": "trakt-mcp",
+  "publicOrigin": "https://REPLACE.workers.dev",
+  "allowedGithubUserId": "REPLACE",
+  "githubClientId": "REPLACE",
+  "timezone": "UTC",
+  "deleteMode": "none",
+  "authEpoch": "1",
+  "accessMode": "read-only",
+  "traktClientId": "REPLACE"
+}

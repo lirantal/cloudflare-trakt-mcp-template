@@ -1,0 +1,9 @@
+ICU Visor Cloudflare MCP Gateway
+Copyright 2026 Liran Tal
+
+The gateway code in this repository is licensed under Apache License 2.0.
+The container builds ricardocabral/icuvisor from source with a small transport
+patch. ICU Visor and third-party dependencies retain their respective licenses.
+The upstream ICU Visor license is included in the built container at
+/usr/share/doc/icuvisor/LICENSE. See docs/ARCHITECTURE.md for provenance.
+

@@ -1,0 +1,5 @@
+**
+!Dockerfile
+!patches/
+!patches/icuvisor-stateless-http.patch
+

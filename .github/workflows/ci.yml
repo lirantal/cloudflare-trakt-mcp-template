@@ -1,0 +1,52 @@
+name: Check and build
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      CF_SEND_TELEMETRY: 'false'
+      REQUIRE_BROWSER_TESTS: 'true'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Scan committed history for secrets
+        env:
+          GITLEAKS_VERSION: '8.30.1'
+          GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
+        run: |
+          mkdir -p work/scanner
+          curl --fail --location --silent --show-error "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o work/scanner/gitleaks.tar.gz
+          echo "${GITLEAKS_SHA256}  work/scanner/gitleaks.tar.gz" | sha256sum --check --status
+          tar -xzf work/scanner/gitleaks.tar.gz -C work/scanner gitleaks
+          work/scanner/gitleaks git --redact=100 --no-banner --log-opts=--all .
+      - run: npm ci
+      - run: npm run check:public
+      - run: npm run check
+      - name: Set up Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+      - run: npm test
+        env:
+          CHROMIUM_BIN: ${{ steps.chrome.outputs.chrome-path }}
+      - run: npm run build
+      - run: npx cf deploy --prebuilt --mode production --dry-run
+      - run: docker build -t trakt-mcp:test .
+      - run: npm run test:container
+

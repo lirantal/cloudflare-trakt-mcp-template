@@ -1,0 +1,26 @@
+node_modules/
+work/
+.cloudflare/
+.wrangler/
+dist/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.log
+
+# Private deployment identity/settings and machine credentials
+deployment.local.json
+*.pem
+*.key
+*.p12
+*.pfx
+.envrc
+.npmrc
+.netrc
+.aws/
+.docker/
+.config/
+

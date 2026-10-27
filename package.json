@@ -1,0 +1,35 @@
+{
+  "name": "trakt-cloudflare-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.23.0 || >=24.22.0"
+  },
+  "scripts": {
+    "dev": "cf dev",
+    "build": "cf build",
+    "deploy": "node scripts/deploy.mjs",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "preflight": "node scripts/preflight.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "test:container": "node scripts/container-smoke.mjs",
+    "check:public": "node scripts/check-public.mjs"
+  },
+  "dependencies": {
+    "@cloudflare/workers-oauth-provider": "1.2.4"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-beta.v.5",
+    "@cloudflare/workers-types": "5.20261026.1",
+    "@types/node": "26.6.5",
+    "cf": "1.0.0-beta.23",
+    "esbuild": "0.28.2",
+    "miniflare": "5.20261023.0-beta",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}
+
