@@ -11,5 +11,6 @@ if(settings.deleteMode!=='none')errors.push('deleteMode must be none: deletion i
 try{new Intl.DateTimeFormat('en',{timeZone:settings.timezone}).format();}catch{errors.push('timezone must be an IANA timezone');}
 if(!settings.authEpoch)errors.push('authEpoch must be non-empty');
 if(!settings.traktClientId || settings.traktClientId==='REPLACE')errors.push('Set traktClientId to your Trakt development app Client ID');
+if(settings.traktLegacySecret!==undefined && typeof settings.traktLegacySecret!=='boolean')errors.push('traktLegacySecret must be boolean');
 if(errors.length){console.error('Deployment configuration needs attention:\n'+errors.map(s=>'- '+s).join('\n'));process.exitCode=1;}
 else console.log('Configuration valid; verify the selected account, owner identity, and plan before first deployment.');

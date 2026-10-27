@@ -25,6 +25,7 @@ An upgrade/purchase must be performed by the account owner.
 | allowedGithubUserId | Verified numeric GitHub owner ID, stored as a string |
 | githubClientId | New GitHub OAuth App's Client ID |
 | traktClientId | Personal Trakt Development app's Client ID |
+| traktLegacySecret | Optional boolean, default false; enable only for an older app that issued a secret |
 | accessMode | `read-only` or `track` |
 | deleteMode | Must be `none` |
 | authEpoch | Start at `1`; change to invalidate gateway grants |
@@ -54,7 +55,8 @@ Trakt may require verification through GitHub. Register `http://localhost` as
 the required redirect URI and leave browser allowed origins blank. The device
 flow does not receive a callback. Save its Client ID in private settings. New
 apps may not issue a secret; if an older app has one, store it as the optional
-Worker Secret `TRAKT_CLIENT_SECRET`.
+Worker Secret `TRAKT_CLIENT_SECRET` and set `traktLegacySecret: true` in private
+settings. The secret binding is omitted by default; current apps require none.
 
 Trakt authorization is separate from ChatGPT/GitHub gateway authorization.
 After connecting ChatGPT, invoke `start_device_auth`, approve the displayed code

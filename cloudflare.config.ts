@@ -30,7 +30,7 @@ export default defineConfig({
       AUTH_EPOCH: bindings.text(settings.authEpoch),
       GITHUB_CLIENT_SECRET: bindings.secret(),
       TRAKT_CLIENT_ID: bindings.text(settings.traktClientId),
-      TRAKT_CLIENT_SECRET: bindings.secret(),
+      ...(settings.traktLegacySecret ? {TRAKT_CLIENT_SECRET: bindings.secret()} : {}),
       TRAKT_ACCESS_MODE: bindings.text(settings.accessMode),
     },
   },

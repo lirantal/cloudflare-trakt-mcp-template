@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 const settings=JSON.parse(readFileSync(new URL('../deployment.json',import.meta.url),'utf8'));
-const keys=['accountId','workerName','publicOrigin','allowedGithubUserId','githubClientId','traktClientId','timezone','deleteMode','accessMode','authEpoch'];
+const keys=['accountId','workerName','publicOrigin','allowedGithubUserId','githubClientId','traktClientId','traktLegacySecret','timezone','deleteMode','accessMode','authEpoch'];
 const errors=[];
 if(Object.keys(settings).some(key=>!keys.includes(key)))errors.push('Public template contains an unexpected field');
 for(const key of ['accountId','publicOrigin','allowedGithubUserId','githubClientId','traktClientId'])if(!String(settings[key]).includes('REPLACE'))errors.push(`Keep ${key} as a public placeholder; use deployment.local.json`);

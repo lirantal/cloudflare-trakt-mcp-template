@@ -9,6 +9,7 @@ export interface DeploymentSettings {
   allowedGithubUserId: string;
   githubClientId: string;
   traktClientId: string;
+  traktLegacySecret?: boolean;
   timezone: string;
   deleteMode: string;
   accessMode: string;
