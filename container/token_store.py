@@ -3,6 +3,7 @@ import os
 import urllib.request
 from contextlib import asynccontextmanager
 import asyncio
+import json
 
 
 def install():
@@ -35,7 +36,8 @@ def install():
 
         def sync_from_disk(self):
             raw = self.request('GET')
-            self.token = None if raw == b'null' else TraktAuthToken.model_validate_json(raw)
+            decoded = json.loads(raw)
+            self.token = None if decoded is None else TraktAuthToken.model_validate(decoded)
 
         def save(self, token):
             # A failed durable write is an error, never silent memory-only success.

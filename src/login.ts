@@ -18,11 +18,14 @@ export async function login(request: Request, env: Env): Promise<Response> {
       // same-origin Origin check usable without leaking auth URLs to GitHub.
       consent.headers.set('referrer-policy', 'same-origin');
       const e = escapeHtml;
+      const access = env.TRAKT_ACCESS_MODE === 'track'
+        ? 'View history and recommendations; mark watched, add to watchlist, and save ratings. Deletion is disabled.'
+        : 'View history, progress, watchlists, ratings, and recommendations. Viewing-data changes are disabled.';
       return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><title>Connect Trakt</title>
         <h1>Connect your Trakt viewing data</h1><p>This server is restricted to its owner's GitHub identity.</p>
         <p>Client name (self-reported): <strong>${e(description.clientName)}</strong></p>
         <p>Callback host: <strong>${e(description.redirectHost)}</strong></p>
-        <p>Callback: ${e(description.redirectUri)}</p><p>Permission: ${SCOPE}. Data access follows the server's configured safety mode.</p>
+        <p>Callback: ${e(description.redirectUri)}</p><p>Permission: ${SCOPE}. ${access}</p>
         <form method="post" action="/authorize"><input type="hidden" name="handle" value="${e(consent.handle)}">
         <button name="decision" value="approve">Continue with GitHub</button>
         <button name="decision" value="deny">Cancel</button></form></html>`, {headers:consent.headers});

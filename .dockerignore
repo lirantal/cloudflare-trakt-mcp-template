@@ -4,4 +4,6 @@
 !patches/trakt-mcp-sdk2.patch
 !container/
 !container/**
+container/test_*.py
+container/__pycache__/
 

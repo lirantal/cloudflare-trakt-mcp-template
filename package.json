@@ -15,6 +15,7 @@
     "preflight": "node scripts/preflight.mjs",
     "smoke": "node scripts/smoke.mjs",
     "test:container": "node scripts/container-smoke.mjs",
+    "test:adapter": "node scripts/adapter-tests.mjs",
     "check:public": "node scripts/check-public.mjs"
   },
   "dependencies": {

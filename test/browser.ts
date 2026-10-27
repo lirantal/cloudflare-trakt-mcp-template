@@ -48,7 +48,7 @@ export async function browserConsent(
   decision: 'approve' | 'deny',
 ): Promise<{ destination: string; violations: string[] }> {
   if (!chromium) throw new Error('Chromium is required for browser consent validation');
-  const directory=await mkdtemp(join(tmpdir(),'icuvisor-browser-'));
+  const directory=await mkdtemp(join(tmpdir(),'trakt-browser-'));
   let localOrigin='';
   const server=http.createServer(async(req,res)=>{
     try {

@@ -6,16 +6,14 @@ if(preflight.status!==0)process.exit(preflight.status??1);
 let temporary;
 try{
   const args=['deploy',...process.argv.slice(2)];
-  const names=['GITHUB_CLIENT_SECRET'];
-  const optional=['TRAKT_CLIENT_SECRET'];
+  const names=['GITHUB_CLIENT_SECRET','TRAKT_CLIENT_SECRET'];
   const supplied=names.filter(n=>process.env[n]);
-  if(supplied.length && supplied.length!==names.length)throw Error('Provide GITHUB_CLIENT_SECRET, or neither to preserve deployed secrets');
+  if(supplied.length && !process.env.GITHUB_CLIENT_SECRET)throw Error('Provide GITHUB_CLIENT_SECRET with optional TRAKT_CLIENT_SECRET, or neither to preserve deployed secrets');
   if(supplied.length){
-    names.push(...optional.filter(n=>process.env[n]));
     await mkdir('work',{recursive:true});
     temporary=await mkdtemp('work/deploy-');
     const file=path.resolve(temporary,'secrets.json');
-    await writeFile(file,JSON.stringify(Object.fromEntries(names.map(n=>[n,process.env[n]]))),{mode:0o600});
+    await writeFile(file,JSON.stringify(Object.fromEntries(supplied.map(n=>[n,process.env[n]]))),{mode:0o600});
     args.push('--secrets-file',file);
   }
   const childEnv={...process.env};

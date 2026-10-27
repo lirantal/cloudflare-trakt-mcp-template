@@ -17,8 +17,8 @@ RUN --mount=type=secret,id=proxy_ca \
 FROM python:3.12.14-slim-bookworm
 COPY --from=build /install /usr/local
 WORKDIR /app
-COPY container/main.py container/token_store.py ./
-COPY container/LICENSE.trakt-mcp /usr/share/doc/trakt-mcp/LICENSE
+COPY --chmod=644 container/main.py container/token_store.py ./
+COPY --chmod=644 container/LICENSE.trakt-mcp /usr/share/doc/trakt-mcp/LICENSE
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 USER 65532:65532
 EXPOSE 8080

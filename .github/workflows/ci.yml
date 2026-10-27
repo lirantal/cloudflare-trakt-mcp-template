@@ -49,4 +49,5 @@ jobs:
       - run: npx cf deploy --prebuilt --mode production --dry-run
       - run: docker build -t trakt-mcp:test .
       - run: npm run test:container
+      - run: npm run test:adapter
 

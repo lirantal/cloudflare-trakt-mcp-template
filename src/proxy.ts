@@ -17,7 +17,7 @@ export async function proxyMcp(request: Request, env: Env, props: Props): Promis
   for (const [name, value] of request.headers) {
     if (/^mcp-param-[a-z0-9-]+$/.test(name)) headers.set(name, value);
   }
-  // The Go SDK protects loopback hosts against DNS rebinding. The internal target is fixed.
+  // The SDK protects loopback hosts against DNS rebinding. The internal target is fixed.
   const upstream = new Request('http://localhost:8080/mcp', {
     method: request.method, headers,
     body: request.body, redirect: 'manual', signal: request.signal,
