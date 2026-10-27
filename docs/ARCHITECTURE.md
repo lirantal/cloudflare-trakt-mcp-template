@@ -52,7 +52,7 @@ sequenceDiagram
     W-->>B: Redirect to validated ChatGPT callback with access_denied
   end
   Note over W,G: GitHub token is used for identity lookup only, then discarded
-  Note over C,K: Gateway tokens authorize MCP access; they do not authorize Trakt
+  Note over C,K: Gateway tokens authorize MCP access. They do not authorize Trakt
   opt Gateway access token needs refresh
     C->>W: POST /token with gateway refresh token and resource
     W->>K: Load grant and validate refresh transaction
