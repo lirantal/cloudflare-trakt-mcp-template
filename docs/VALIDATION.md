@@ -14,15 +14,26 @@ Local checks completed with dummy credentials and no real Trakt API queries:
 - Python adapter regression tests for restoring the latest saved token pair,
   disconnect, and refusing memory-only success after durable storage failure.
 
-Cloudflare account and Workers Paid entitlement verified. A new 503 setup Worker
-has been deployed to permit dashboard-only secure secret entry. This is **not**
-a completed MCP deployment.
+Production deployment completed in the selected Cloudflare account after
+verifying Workers Paid entitlement and secure GitHub secret entry. The full
+Worker, OAuth KV, SQLite Durable Object and Container application were created.
+The version API confirms a digest-pinned container image, the SQLite export,
+and the GitHub secret binding's `secret_text` type. Private owner/origin/app IDs
+remain in ignored deployment settings. Current Trakt apps use no secret binding.
+
+The configured tracking catalog contains 32 tools. The container is started on
+demand; deployment completion alone does not prove a real authenticated call.
+GitHub CI passed on the tested implementation, including the history secret scan,
+required browser checks, image build, both protocol/catalog checks, and adapter
+tests. Main/PR pushes never deploy production.
+
+The managed environment's egress policy explicitly rejects the production
+`workers.dev` hostname (proxy HTTP 403). Public smoke therefore remains blocked
+from that environment; the restriction was not bypassed.
 
 Outstanding acceptance until recorded otherwise:
 
-- Concrete GitHub/Trakt app settings and required runtime Secret entry.
-- Full production Worker, OAuth KV, Durable Object and Container rollout.
-- Public smoke against the configured origin.
+- Public smoke from an environment allowed to reach the configured origin.
 - Real ChatGPT discovery and owner data query after Trakt device approval.
 - Live restart/token-refresh persistence, real non-owner GitHub denial, and an
   explicitly requested tracking write verified in Trakt.
