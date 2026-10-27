@@ -50,6 +50,11 @@ Record these separately, without saving actual viewing history in reports:
   `2026-07-28`, required MCP headers survive proxying, and Refresh tools was used.
 - Token store unavailable: check Worker reachability from the container and its
   bridge key. Do not fall back to ephemeral disk or log the failed request.
+- Authentication-status tools fail while public trending tools work: isolate the
+  token bridge before changing the Trakt app. Python's default urllib user agent
+  received HTTP 403 on this deployment; the explicit application user agent fixes
+  that request. Keep it in place. Errors expose only HTTP status/known edge
+  classification or network/TLS category, never response bodies or identifiers.
 - Device auth pending: finish the Trakt approval, then wait the indicated poll
   interval. After an idle restart, start a new flow if no token was saved.
 - `invalid_client`: confirm the Trakt Development Client ID and optional legacy

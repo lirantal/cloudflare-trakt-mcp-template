@@ -13,6 +13,8 @@ Local checks completed with dummy credentials and no real Trakt API queries:
   denial of an unregistered deletion tool.
 - Python adapter regression tests for restoring the latest saved token pair,
   disconnect, and refusing memory-only success after durable storage failure.
+  Four adapter tests now also cover the required application user agent, sanitized
+  edge-error classification, and execution of the registered authentication tool.
 
 Production deployment completed in the selected Cloudflare account after
 verifying Workers Paid entitlement and secure GitHub secret entry. The full
@@ -22,7 +24,15 @@ and the GitHub secret binding's `secret_text` type. Private owner/origin/app IDs
 remain in ignored deployment settings. Current Trakt apps use no secret binding.
 
 The configured tracking catalog contains 32 tools. The container is started on
-demand; deployment completion alone does not prove a real authenticated call.
+demand. Real ChatGPT tool discovery, Trakt device authorization without a client
+secret, authentication-status verification and a personal watch-history query
+have now succeeded. No viewing history was saved in repository artifacts.
+
+During live acceptance, public Trakt tools worked while personal/authentication
+tools failed. The token bridge returned HTTP 403 for Python's default urllib
+user agent. An explicit application user agent resolved that rejection; the
+device grant and history query then completed. Trakt app credentials and owner
+authorization restrictions were unchanged.
 GitHub CI passed on the tested implementation, including the history secret scan,
 required browser checks, image build, both protocol/catalog checks, and adapter
 tests. Main/PR pushes never deploy production.
@@ -34,7 +44,6 @@ from that environment; the restriction was not bypassed.
 Outstanding acceptance until recorded otherwise:
 
 - Public smoke from an environment allowed to reach the configured origin.
-- Real ChatGPT discovery and owner data query after Trakt device approval.
 - Live restart/token-refresh persistence, real non-owner GitHub denial, and an
   explicitly requested tracking write verified in Trakt.
 
