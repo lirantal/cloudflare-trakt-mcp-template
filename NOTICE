@@ -1,9 +1,11 @@
-ICU Visor Cloudflare MCP Gateway
+Trakt Cloudflare MCP Gateway
 Copyright 2026 Liran Tal
 
 The gateway code in this repository is licensed under Apache License 2.0.
-The container builds ricardocabral/icuvisor from source with a small transport
-patch. ICU Visor and third-party dependencies retain their respective licenses.
-The upstream ICU Visor license is included in the built container at
-/usr/share/doc/icuvisor/LICENSE. See docs/ARCHITECTURE.md for provenance.
+The OAuth gateway is adapted from lirantal/cloudflare-intervals-icu-mcp-template
+commit 1dc3d738908c2555b132746f9d0df3df0480d07a (Apache-2.0).
+The container builds wwiens/trakt_mcpserver commit
+cd491444be86dbc219d77dc652f75432d7f3af57 with a reviewed MCP SDK migration patch.
+Its MIT license is included at /usr/share/doc/trakt-mcp/LICENSE.
+Third-party dependencies retain their respective licenses.
 

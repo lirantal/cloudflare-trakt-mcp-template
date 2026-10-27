@@ -20,32 +20,36 @@ function fixture(running = false, image = 'sha256:pinned') {
       return new Response(url.endsWith('/mcp') ? 'streamed MCP' : 'Not found', { status: url.endsWith('/mcp') ? 200 : 404 });
     }) })),
   };
-  const ctx = { container, blockConcurrencyWhile: vi.fn((fn: () => unknown) => fn()) };
+  const values=new Map();
+  const pending:Promise<unknown>[]=[];
+  const ctx = { container, storage:{get:vi.fn(async(k:string)=>values.get(k)),put:vi.fn(async(k:string,v:unknown)=>{values.set(k,v);})}, blockConcurrencyWhile: vi.fn((fn: () => unknown) => {const p=Promise.resolve(fn());pending.push(p);return p;}) };
   const worker = new TraktContainer(ctx as never, {
-    TRAKT_CLIENT_ID: 'dummy', INTERVALS_ICU_ATHLETE_ID: 'i123',
-    ICUVISOR_TIMEZONE: 'UTC', ICUVISOR_TOOLSET: 'core', TRAKT_DELETE_MODE: 'delete',
+    TRAKT_CLIENT_ID: 'dummy', PUBLIC_ORIGIN:'https://owner.example',TRAKT_ACCESS_MODE:'track',
   } as never);
-  return { worker, container, ctx, requests };
+  return { worker, container, ctx, requests,initialized:()=>Promise.all(pending) };
 }
 describe('native container lifecycle', () => {
   it('starts one pinned lite instance for concurrent requests with read-only runtime settings', async () => {
-    const { worker, container, requests } = fixture();
+    const { worker, container, requests,initialized } = fixture();
+    await initialized();
     const results = await Promise.all([worker.fetch(new Request('http://localhost:8080/mcp')), worker.fetch(new Request('http://localhost:8080/mcp'))]);
     expect(container.start).toHaveBeenCalledTimes(1);
-    expect(container.start).toHaveBeenCalledWith(expect.objectContaining({image:'sha256:pinned',instance:'lite',enableInternet:true,env:expect.objectContaining({TRAKT_DELETE_MODE:'none',ICUVISOR_COACH_MODE:'off'})}));
+    expect(container.start).toHaveBeenCalledWith(expect.objectContaining({image:'sha256:pinned',instance:'lite',enableInternet:true,env:expect.objectContaining({TRAKT_ACCESS_MODE:'track',TRAKT_TOKEN_STORE_KEY:expect.any(String)})}));
     expect(container.setInactivityTimeout).toHaveBeenCalledWith(600000);
     expect(requests.filter(url => url.endsWith('/mcp'))).toHaveLength(2);
     expect(await results[0].text()).toBe('streamed MCP');
   });
   it('restores inactivity timeout on eviction and replaces an old image', async () => {
-    const { worker, container, ctx } = fixture(true, 'sha256:old');
-    expect(ctx.blockConcurrencyWhile).toHaveBeenCalledTimes(1);
+    const { worker, container, ctx,initialized } = fixture(true, 'sha256:old');
+    await initialized();
+    expect(ctx.blockConcurrencyWhile).toHaveBeenCalledTimes(2);
     await worker.fetch(new Request('http://localhost:8080/mcp'));
     expect(container.destroy).toHaveBeenCalledTimes(1);
     expect(container.start).toHaveBeenCalledTimes(1);
   });
   it('does not replay a failed MCP request', async () => {
-    const { worker, container } = fixture();
+    const { worker, container,initialized } = fixture();
+    await initialized();
     const forward = vi.fn(async (input: Request | string) => {
       if (typeof input !== 'string') throw new Error('interrupted request');
       return new Response(null, {status:404});

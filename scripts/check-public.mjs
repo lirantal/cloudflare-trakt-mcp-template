@@ -4,7 +4,7 @@ const settings=JSON.parse(readFileSync(new URL('../deployment.json',import.meta.
 const keys=['accountId','workerName','publicOrigin','allowedGithubUserId','githubClientId','traktClientId','timezone','deleteMode','accessMode','authEpoch'];
 const errors=[];
 if(Object.keys(settings).some(key=>!keys.includes(key)))errors.push('Public template contains an unexpected field');
-for(const key of ['accountId','publicOrigin','allowedGithubUserId','githubClientId','traktClientId','athleteId'])if(!String(settings[key]).includes('REPLACE'))errors.push(`Keep ${key} as a public placeholder; use deployment.local.json`);
+for(const key of ['accountId','publicOrigin','allowedGithubUserId','githubClientId','traktClientId'])if(!String(settings[key]).includes('REPLACE'))errors.push(`Keep ${key} as a public placeholder; use deployment.local.json`);
 if(settings.timezone!=='UTC'||settings.workerName!=='trakt-mcp')errors.push('Keep public example timezone/name generic');
 const result=spawnSync('git',['ls-files','-z'],{encoding:'utf8'});
 if(result.status!==0)throw Error('Cannot inspect tracked files');

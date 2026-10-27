@@ -1,5 +1,7 @@
 **
 !Dockerfile
 !patches/
-!patches/icuvisor-stateless-http.patch
+!patches/trakt-mcp-sdk2.patch
+!container/
+!container/**
 

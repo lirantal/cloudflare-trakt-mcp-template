@@ -1,0 +1,262 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 674b417..66669a5 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -9,8 +9,8 @@ requires-python = ">=3.12"
+ dependencies = [
+     "python-dotenv>=1.1.1",
+     "httpx>=0.27.0",
+-    "mcp>=1.10.1",
+-    "pydantic==2.11.7",
++    "mcp==2.3.0",
++    "pydantic==2.14.1",
+ ]
+ 
+ [project.scripts]
+diff --git a/server/auth/resources.py b/server/auth/resources.py
+index 1f13f81..f46482b 100644
+--- a/server/auth/resources.py
++++ b/server/auth/resources.py
+@@ -2,7 +2,7 @@
+ 
+ from collections.abc import Callable, Coroutine
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+ from client.auth import AuthClient
+ from client.pool import get_client
+diff --git a/server/auth/tools.py b/server/auth/tools.py
+index a8882bd..0ebf113 100644
+--- a/server/auth/tools.py
++++ b/server/auth/tools.py
+@@ -5,7 +5,7 @@ import logging
+ import time
+ from typing import Any, Final, TypedDict
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+ from client.auth import AuthClient
+ from client.pool import get_client
+diff --git a/server/checkin/tools.py b/server/checkin/tools.py
+index 474d656..9d6006c 100644
+--- a/server/checkin/tools.py
++++ b/server/checkin/tools.py
+@@ -3,7 +3,7 @@
+ import logging
+ from typing import Annotated, Any
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.checkin.client import CheckinClient
+diff --git a/server/comments/tools.py b/server/comments/tools.py
+index 8daa82a..8dca0aa 100644
+--- a/server/comments/tools.py
++++ b/server/comments/tools.py
+@@ -3,7 +3,7 @@
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Literal, NoReturn, TypedDict
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import BaseModel, Field, PositiveInt, ValidationError
+ 
+ from client.comments.details import CommentDetailsClient
+diff --git a/server/episodes/tools.py b/server/episodes/tools.py
+index f4131fe..0338d16 100644
+--- a/server/episodes/tools.py
++++ b/server/episodes/tools.py
+@@ -5,7 +5,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import TYPE_CHECKING, Annotated, Final, Literal, TypeAlias
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.episodes.lists import EpisodeListsClient
+diff --git a/server/main.py b/server/main.py
+index d48f639..4f7f9f3 100644
+--- a/server/main.py
++++ b/server/main.py
+@@ -6,7 +6,7 @@ from collections.abc import AsyncGenerator, Callable
+ from contextlib import asynccontextmanager
+ from typing import Final
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+ from client.pool import shutdown_clients
+ from utils.version import package_version
+diff --git a/server/movies/resources.py b/server/movies/resources.py
+index d09841f..085ac29 100644
+--- a/server/movies/resources.py
++++ b/server/movies/resources.py
+@@ -7,7 +7,7 @@ from collections.abc import Awaitable, Callable
+ from typing import TYPE_CHECKING, TypeAlias
+ 
+ if TYPE_CHECKING:
+-    from mcp.server.fastmcp import FastMCP
++    from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+     from models.types import MovieResponse
+ from pydantic import ValidationError
+diff --git a/server/movies/tools.py b/server/movies/tools.py
+index 0c5d7c6..f22439c 100644
+--- a/server/movies/tools.py
++++ b/server/movies/tools.py
+@@ -6,7 +6,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Literal
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.movies.anticipated import AnticipatedMoviesClient
+diff --git a/server/people/tools.py b/server/people/tools.py
+index 86732ef..5e22f84 100644
+--- a/server/people/tools.py
++++ b/server/people/tools.py
+@@ -5,7 +5,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Final, Literal, TypeAlias
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.people.lists import PersonListsClient
+diff --git a/server/progress/tools.py b/server/progress/tools.py
+index 6c44bc3..d71dc91 100644
+--- a/server/progress/tools.py
++++ b/server/progress/tools.py
+@@ -4,7 +4,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Literal
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import BaseModel, Field
+ 
+ from client.pool import get_client
+diff --git a/server/prompts/basic.py b/server/prompts/basic.py
+index a20c661..3a81017 100644
+--- a/server/prompts/basic.py
++++ b/server/prompts/basic.py
+@@ -7,7 +7,7 @@ discovery and search scenarios.
+ 
+ from typing import Any
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+ 
+ async def discover_trending() -> list[dict[str, Any]]:
+diff --git a/server/recommendations/tools.py b/server/recommendations/tools.py
+index 994b10d..2b05b13 100644
+--- a/server/recommendations/tools.py
++++ b/server/recommendations/tools.py
+@@ -4,7 +4,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import BaseModel, Field
+ 
+ from client.pool import get_client
+diff --git a/server/search/tools.py b/server/search/tools.py
+index 30204d0..2f293d9 100644
+--- a/server/search/tools.py
++++ b/server/search/tools.py
+@@ -3,7 +3,7 @@
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Any
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field, ValidationError, field_validator
+ 
+ from client.pool import get_client
+diff --git a/server/seasons/tools.py b/server/seasons/tools.py
+index 087fa5c..b631565 100644
+--- a/server/seasons/tools.py
++++ b/server/seasons/tools.py
+@@ -5,7 +5,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import TYPE_CHECKING, Annotated, Final, Literal, TypeAlias
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.pool import get_client
+diff --git a/server/shows/resources.py b/server/shows/resources.py
+index 2e8b3c3..ab74b6e 100644
+--- a/server/shows/resources.py
++++ b/server/shows/resources.py
+@@ -7,7 +7,7 @@ from collections.abc import Awaitable, Callable
+ from typing import TYPE_CHECKING, TypeAlias
+ 
+ if TYPE_CHECKING:
+-    from mcp.server.fastmcp import FastMCP
++    from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+     from models.types import ShowResponse
+ from pydantic import ValidationError
+diff --git a/server/shows/tools.py b/server/shows/tools.py
+index 91ba907..6ee765b 100644
+--- a/server/shows/tools.py
++++ b/server/shows/tools.py
+@@ -6,7 +6,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Literal
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import Field
+ 
+ from client.pool import get_client
+diff --git a/server/sync/tools.py b/server/sync/tools.py
+index 0cafb79..b7f8d5f 100644
+--- a/server/sync/tools.py
++++ b/server/sync/tools.py
+@@ -4,7 +4,7 @@ import logging
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Any, ClassVar, Literal
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import BaseModel, Field, field_validator
+ 
+ from client.pool import get_client
+diff --git a/server/user/resources.py b/server/user/resources.py
+index cfcb901..2b2451a 100644
+--- a/server/user/resources.py
++++ b/server/user/resources.py
+@@ -3,7 +3,7 @@
+ from collections.abc import Awaitable, Callable
+ from typing import TypeAlias
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ 
+ from client.pool import get_client
+ from client.user import UserClient
+diff --git a/server/user/tools.py b/server/user/tools.py
+index 26a688a..58a9975 100644
+--- a/server/user/tools.py
++++ b/server/user/tools.py
+@@ -3,7 +3,7 @@
+ from collections.abc import Awaitable, Callable
+ from typing import Annotated, Any
+ 
+-from mcp.server.fastmcp import FastMCP
++from mcp.server.mcpserver import MCPServer as FastMCP
+ from pydantic import BaseModel, Field, ValidationError
+ 
+ from client.pool import get_client

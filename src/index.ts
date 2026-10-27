@@ -3,6 +3,7 @@ import type { Env, Props } from './env';
 import { login } from './login';
 import { configured, isChatGptRedirect, isOwner, SCOPE } from './policy';
 import { proxyMcp } from './proxy';
+import { TOKEN_PATH, routeTokenStore } from './token-store';
 export { TraktContainer } from './container';
 
 export function createProvider(env: Env) {
@@ -35,6 +36,10 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     if (!configured(env)) return new Response('Server setup incomplete', {status:503});
     if (new URL(request.url).origin !== env.PUBLIC_ORIGIN) return new Response('Unknown origin', {status:421});
+    if (new URL(request.url).pathname === TOKEN_PATH) {
+      if (new URL(request.url).search) return new Response('Not found',{status:404});
+      return routeTokenStore(request,env);
+    }
     const response = await createProvider(env).fetch(request, env, ctx);
     const headers = new Headers(response.headers);
     headers.set('Cache-Control','no-store');

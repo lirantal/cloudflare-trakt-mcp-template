@@ -1,0 +1,4 @@
+# Enter securely; never paste credentials into chat.
+GITHUB_CLIENT_SECRET=
+# Optional: only for older Trakt apps that were issued a secret.
+TRAKT_CLIENT_SECRET=
