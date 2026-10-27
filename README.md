@@ -86,6 +86,7 @@ GitHub client secret belongs to a different authentication layer.
 
 - [Upstream comparison and decision](docs/UPSTREAM.md)
 - [Architecture and token trust boundary](docs/ARCHITECTURE.md)
+- [Authentication sequences: GitHub, Trakt device approval and token refresh](docs/ARCHITECTURE.md#authentication-sequence-diagrams)
 - [Deployment and secure credentials](docs/DEPLOYMENT.md)
 - [Operations and acceptance](docs/OPERATIONS.md)
 - [Troubleshooting and verified setup fixes](docs/TROUBLESHOOTING.md)
