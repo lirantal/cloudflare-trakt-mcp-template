@@ -34,6 +34,24 @@ retain authorization; an unfinished device-code flow must be restarted.
 
 ## Setup
 
+### Set up with a coding agent
+
+Fork or clone this template into your repository, then give the agent:
+
+> Follow AGENTS.md's end-to-end setup and resume runbook to deploy my own
+> single-owner Trakt MCP server to my Cloudflare account. Automate the authorized
+> checks, configuration and deployment; guide me through browser approvals and
+> secure secret entry. Ask whether I want read-only or tracking mode. Complete
+> Trakt device authorization and a real personal-data query, then report each
+> acceptance result and any outstanding user-only checks.
+
+The [agent runbook](AGENTS.md#end-to-end-setup-and-resume-runbook) covers fresh
+setup, interrupted provisioning and existing instances. The
+[troubleshooting guide](docs/TROUBLESHOOTING.md) records the failures encountered
+in live setup and the verified fixes.
+
+### Prerequisites and local checks
+
 Requires Node from `.node-version`, Docker with Linux amd64, Chrome/Chromium,
 and a Cloudflare Workers Paid account with Containers. Usage is billable; one
 named instance and ten-minute idle sleep are not a spending cap.
@@ -62,11 +80,15 @@ Connect ChatGPT to **`PUBLIC_ORIGIN/mcp`**, choose **OAuth**, and leave client
 credentials blank when optional. Approve consent and GitHub login. Then ask the
 connector to **start Trakt device authorization**, approve the displayed code on
 Trakt, and ask it to **check authorization status**. Refresh tools after changes.
+Visible tools alone are not acceptance: execute a small personal history/progress
+query after Trakt approval. Current Trakt apps need no client secret; the required
+GitHub client secret belongs to a different authentication layer.
 
 - [Upstream comparison and decision](docs/UPSTREAM.md)
 - [Architecture and token trust boundary](docs/ARCHITECTURE.md)
 - [Deployment and secure credentials](docs/DEPLOYMENT.md)
 - [Operations and acceptance](docs/OPERATIONS.md)
+- [Troubleshooting and verified setup fixes](docs/TROUBLESHOOTING.md)
 - [Validation status](docs/VALIDATION.md)
 
 Gateway: Apache-2.0. Trakt server: MIT; its notice is included in the image.

@@ -42,6 +42,10 @@ Record these separately, without saving actual viewing history in reports:
 
 ## Troubleshooting
 
+The [detailed troubleshooting guide](TROUBLESHOOTING.md) contains the observed
+setup failures, a layer-by-layer diagnostic sequence, and verified recovery
+steps. Use it before resetting grants, replacing apps or reprovisioning resources.
+
 - 503 setup incomplete: check private settings and Secret binding names/types;
   never print their values.
 - OAuth consent failure: retain same-origin Referrer-Policy, CSP GitHub/ChatGPT

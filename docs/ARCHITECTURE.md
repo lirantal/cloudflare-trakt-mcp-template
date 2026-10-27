@@ -21,7 +21,7 @@ runtime settings change. No public container port is configured.
 
 ## Trakt token persistence
 
-The upstream filesystem token store is replaced before importing its clients.
+The upstream filesystem token store is replaced before clients create token stores.
 The replacement synchronously loads/saves the current pair through
 `/internal/trakt-token` on this Worker. The exact route bypasses ChatGPT OAuth
 only for a distinct, random per-owner bridge credential. That credential is
@@ -34,6 +34,13 @@ no general-purpose storage access and cannot call Trakt. Token pairs are stored
 in the owner's SQLite Durable Object, protected by Cloudflare's storage controls;
 there is no extra application encryption key. Treat the Cloudflare account and
 container as trusted credential holders.
+
+Bridge requests identify the application with an explicit User-Agent. Python's
+default urllib user agent received HTTP 403 during live acceptance; retaining
+the explicit header is covered by regression tests. Expected errors expose only
+HTTP status/known edge classification or network/TLS category, never the remote
+response body or credential-bearing request. See the
+[incident and verification](TROUBLESHOOTING.md#token-storage-http-403-and-the-application-user-agent).
 
 Refresh is serialized inside the single container process. The new token pair
 must be durably saved before the upstream save operation succeeds. A storage

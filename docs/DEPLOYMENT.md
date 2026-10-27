@@ -12,6 +12,11 @@ cp deployment.json deployment.local.json
 chmod 600 deployment.local.json
 ```
 
+Copy the template only for a new instance. If private settings already exist,
+resume them and preserve the origin/resources. Wait for device-login completion
+and confirm authenticated status with whoami; if the code expires, start a fresh
+flow. A user-reported browser approval alone does not establish CLI readiness.
+
 Verify the intended account name/ID and Workers Paid/Containers availability.
 Inspect existing Worker names before selecting one. Never change a functioning
 deployment's origin or reuse another gateway's KV or Durable Object namespace.
@@ -58,6 +63,8 @@ flow does not receive a callback. Save its Client ID in private settings. New
 apps may not issue a secret; if an older app has one, store it as the optional
 Worker Secret `TRAKT_CLIENT_SECRET` and set `traktLegacySecret: true` in private
 settings. The secret binding is omitted by default; current apps require none.
+The dashboard's "PKCE / no secret issued" message is compatible with the tested
+secretless device flow; do not create a dummy secret.
 
 Trakt authorization is separate from ChatGPT/GitHub gateway authorization.
 After connecting ChatGPT, invoke `start_device_auth`, approve the displayed code
@@ -80,6 +87,47 @@ do not provision KV, DO or Containers yet. Its handler must return 503
 then add `GITHUB_CLIENT_SECRET` in Workers & Pages → Worker → Settings → Variables
 and Secrets, choosing **Secret**. Do not overwrite an existing service with a
 placeholder. Verify binding names/types only, never retrieve values.
+
+For a concrete bootstrap, from the repository root create work/bootstrap and
+copy the root package.json and vite.config.ts there; the pinned modules resolve
+from the root's installed node_modules. Do not run a separate dependency upgrade.
+Use these files:
+
+```ts
+// work/bootstrap/cloudflare.config.ts
+import { defineConfig } from 'cf/config';
+import settings from '../../deployment.config.ts';
+export default defineConfig({
+  accountId: settings.accountId,
+  worker: {
+    name: settings.workerName,
+    entrypoint: './index.ts',
+    compatibilityDate: '2026-10-26',
+    workersDev: true,
+    previewUrls: false,
+    observability: { enabled: false },
+  },
+});
+```
+
+```ts
+// work/bootstrap/index.ts
+export default {
+  fetch() {
+    return new Response('Setup pending\n', {
+      status: 503,
+      headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' },
+    });
+  },
+};
+```
+
+From work/bootstrap run ../../node_modules/.bin/cf build, then the same cf binary
+with deploy --prebuilt --mode production --dry-run. Inspect the zero-binding
+result before deploying the placeholder. Guide dashboard secret entry, then
+verify names/types with cf workers secrets list --worker YOUR_WORKER_NAME.
+Return to the repository root for the full build and deployment. No local
+secrets file is needed when preserving dashboard secrets.
 
 ## Validate and deploy
 
@@ -124,6 +172,10 @@ Approve the gateway consent and sign into the configured GitHub owner account.
 Refresh tools, then use a visible tool call to start/complete Trakt device auth.
 Verify a small viewing-history/progress query against your Trakt account.
 Complete the separate acceptance checks in [operations](OPERATIONS.md).
+The tool catalog can be visible before Trakt is authorized. If public trending
+works but authentication-status/history calls fail, use the
+[troubleshooting decision tree](TROUBLESHOOTING.md#tools-are-visible-but-calls-fail)
+before reconnecting OAuth or changing app credentials.
 
 ## Managed environment
 
@@ -137,6 +189,13 @@ home is read-only. For Docker downloads behind the session CA:
 docker build --secret id=proxy_ca,src=/etc/ssl/certs/ca-certificates.crt -t trakt-mcp:test .
 ```
 
+Use separate ignored writable directories for XDG_CONFIG_HOME, XDG_CACHE_HOME
+and BUILDX_CONFIG, retaining the same XDG_CONFIG_HOME for Cloudflare login and
+subsequent commands. If registry login needs writable DOCKER_CONFIG, make a
+private copy of the existing Docker configuration and use it for that command;
+preserve its proxy/auth settings without printing them. Remove only temporary
+registry credentials afterward. Do not repurpose HOME or disable TLS checks.
+
 The CA is only mounted during networked build steps and stays out of the final
 image. A fresh uncached cf build also needs the same Docker BuildKit secret;
 prebuild the image using this command when cf does not expose secret mounts.
@@ -144,3 +203,7 @@ Public smoke requires the actual Worker hostname allowed by the environment's
 supported network settings. Trakt authorization also needs `auth.trakt.tv` and
 `api.trakt.tv` if run inside this environment; production container traffic uses
 Cloudflare's network. CI runs on PRs/main and never automatically deploys.
+An initial proxy connection/EPERM error was resolved by enabling the execution
+tool's network permission. An explicit hostname-policy 403 is a different case
+and requires supported allowlist configuration or a user-side run. See
+[network troubleshooting](TROUBLESHOOTING.md#managed-shell-cannot-reach-the-proxy-or-worker).
