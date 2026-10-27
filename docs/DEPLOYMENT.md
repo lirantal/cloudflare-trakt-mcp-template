@@ -20,6 +20,7 @@ An upgrade/purchase must be performed by the account owner.
 | Field | Value |
 | --- | --- |
 | accountId | Selected Cloudflare account ID |
+| oauthKvId | Optional existing OAuth KV namespace ID for resuming an interrupted first deployment; keep it private |
 | workerName | Stable unused name, e.g. `trakt-mcp` |
 | publicOrigin | Exact `https://WORKER.SUBDOMAIN.workers.dev`, no trailing slash |
 | allowedGithubUserId | Verified numeric GitHub owner ID, stored as a string |
@@ -108,6 +109,12 @@ Rebuild after source or private setting changes. Deploying without a secrets fil
 preserves deployed secrets. The deploy wrapper also supports secret environment
 variables through a temporary ignored mode-0600 file; choose one entry mechanism.
 The optional Trakt secret is unnecessary for current Development apps.
+
+If the first deployment creates OAuth KV and then fails before attaching it to
+the Worker, the CLI may try to create the same title again. Put that newly
+created namespace's ID in private `oauthKvId`, rebuild, dry-run, then resume.
+Do not delete or replace an attached namespace or reuse the Intervals gateway's
+namespace: that would lose or mix OAuth registrations and grants.
 
 ## ChatGPT
 

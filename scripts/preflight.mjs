@@ -1,5 +1,6 @@
 import settings from '../deployment.config.ts';
 const errors=[];
+if(settings.oauthKvId && !/^[a-f0-9]{32}$/.test(settings.oauthKvId))errors.push('oauthKvId must be an existing namespace ID');
 if(!/^[a-f0-9]{32}$/.test(settings.accountId))errors.push('accountId must be a Cloudflare account ID');
 if(process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_ACCOUNT_ID!==settings.accountId)errors.push('CLOUDFLARE_ACCOUNT_ID differs from the configured account; remove it or correct it');
 if(!/^[a-z0-9][a-z0-9-]{0,62}$/.test(settings.workerName))errors.push('invalid workerName');

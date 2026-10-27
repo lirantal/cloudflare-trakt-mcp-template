@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 export interface DeploymentSettings {
   accountId: string;
+  oauthKvId?: string;
   workerName: string;
   publicOrigin: string;
   allowedGithubUserId: string;

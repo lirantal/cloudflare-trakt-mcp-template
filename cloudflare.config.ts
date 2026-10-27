@@ -19,7 +19,7 @@ export default defineConfig({
     observability: { enabled: false },
     exports: { TraktContainer: exports.durableObject({ storage: 'sqlite', container }) },
     env: {
-      OAUTH_KV: bindings.kv(),
+      OAUTH_KV: bindings.kv(settings.oauthKvId ? {id:settings.oauthKvId} : {}),
       // cf beta emits script_name even for same-Worker bindings; its new
       // container validator rejects that. Use native upload metadata until fixed.
       MCP_CONTAINER: { type: 'unsafe:durable_object_namespace', class_name: 'TraktContainer' },
